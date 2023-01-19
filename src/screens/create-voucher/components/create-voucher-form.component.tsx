@@ -10,6 +10,9 @@ import {
   TextInput,
   Paper,
   Avatar,
+  Alert,
+  Switch,
+  Box,
 } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons";
 import useVoucherStore from "store/voucher/voucher.store";
@@ -23,123 +26,195 @@ import dayjs from "dayjs";
 export const CreateVoucherForm = () => {
   const { classes } = useStyles();
   const { walletService } = useServices();
-
-  const [chain, setChain] = useState<string | null>("mumbai");
-  const [voucherTitle, setVoucherTitle] = useState<string>();
-
-  const [voucherDesc, setVoucherDesc] = useState<string>();
-  const [creating, setCreating] = useState(false);
-
-  const [date, setDate] = useState<null | Date>();
-  const [expirationTime, setExpirationTime] = useState<number>(0);
-
   const navigate = useNavigate();
 
-  const { setCreateStep, setFormData, formData } = useVoucherStore((state: any) => state);
+  const [walletName, setWalletName] = useState("");
+  const [walletDescription, setWalletDescription] = useState("");
+
+  const [signalingPeriod, setSignalingPeriod] = useState(300);
+  const [walletBeneficiary, setWalletBeneficiary] = useState("");
+
+  const [claimType, setClaimType] = useState(0);
+  const [DdayTime, setDdayTime] = useState(0);
+
+  const [date, setDate] = useState(null);
+  const [isTopupToggleChecked, setIsTopupToggleChecked] = useState(false);
+
+  const [topupValue, setTopupValue] = useState<any>("");
+
+  const [selectWallet, setSelectWallet] = useState([]);
+  const [options, setOptions] = useState(selectWallet);
+
+  const [seedPhrase, setSeedPhrase] = useState<any>("");
+  const [balanceLoader, setBalanceLoader] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [validator, setValidator] = useState(false);
+
+  const [advancedOptions, setAdvancedOptions] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const { setCreateStep, setFormData, formData } = useVoucherStore(
+    (state: any) => state
+  );
 
   const createVoucher = async () => {
-    setCreating(true);
-    const wallet = await walletService.load();
-    setFormData({
-      title: voucherTitle,
-      description: voucherDesc,
-      privateKey: formData.privateKey ? formData.privateKey : wallet.data?.privateKey,
-      address: formData.address ? formData.address : wallet.data?.address,
-      chain: chain,
-      expirationTime: expirationTime
-    });
-
-    setCreating(false);
-    setCreateStep(2);
-  };
-
-
-  const setExpiration = (date: Date) => {
-    setDate(date);
-    const presentTime = Date.now() / 1000;
-    const futureTime = dayjs(date).valueOf() / 1000;
-    const timeDifference = futureTime - presentTime;
-    setExpirationTime(Math.floor(timeDifference));
+    // setCreating(true);
+    // const wallet = await walletService.load();
+    // setFormData({
+    //   title: voucherTitle,
+    //   description: voucherDesc,
+    //   privateKey: formData.privateKey
+    //     ? formData.privateKey
+    //     : wallet.data?.privateKey,
+    //   address: formData.address ? formData.address : wallet.data?.address,
+    //   chain: chain,
+    //   expirationTime: expirationTime,
+    // });
+    // setCreating(false);
+    // setCreateStep(2);
   };
 
   const backButtonHandler = () => {
     navigate(-1);
   };
 
-  interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
-    image: string;
-    label: string;
-    description: string;
-  }
-
-  const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
-    ({ image, label, description, ...others }: ItemProps, ref) => (
-      <div ref={ref} {...others}>
-        <Group noWrap>
-          <Avatar src={image} />
-  
-          <div>
-            <Text size="sm">{label}</Text>
-            <Text size="xs" >
-              {description}
-            </Text>
-          </div>
-        </Group>
-      </div>
-    )
-  );
-  
-
   return (
     <Container className={classes.box}>
       <Paper className={classes.formContainer} withBorder>
         <BackButton label="Back to Home" onClick={backButtonHandler} />
         <Group mb={30}>
-          <Title>Create a New Voucher</Title>
+          <Title>Create a New Wallet</Title>
         </Group>
         <Stack justify="flex-start">
-          <Select
-            label="Select Currency"
-            placeholder="Select Currency"
-            itemComponent={SelectItem}
-            value={chain}
-            data={[
-              { value: "mumbai", label: "MATIC (Testnet)", image: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/matic.svg' },
-              { value: "eth", label: "ETH", image: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/eth.svg', description: 'ETH on Ethereum chain (Adding soon)', disabled: true },
-              { value: "bsc", label: "BNB", image: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/bnb.svg', description: 'BNB on BSC chain (Adding soon)',  disabled: true  },
-              { value: "avalanche", label: "AVAX", image: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/avax.svg', description: 'AVAX on Avalanche C-Chain (Adding soon)', disabled: true},
-              { value: "matic", label: "MATIC (Mainnet)", image: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/matic.svg', description: 'Matic on Polygon chain (Adding soon)', disabled: true},
-            ]}
-            onChange={setChain}
-          />
-
           <TextInput
             type="text"
-            placeholder="Voucher Title"
-            label="Voucher Title (Optional)"
+            placeholder="Enter Wallet Name"
+            label="Waller Name"
             rightSectionWidth={92}
             onChange={(event) => {
-              setVoucherTitle(event.target.value);
+              setWalletName(event.target.value);
             }}
           />
 
           <Textarea
-            placeholder="Voucher Description"
-            label="Voucher Description (Optional)"
+            placeholder="Wallet Description"
+            label="Wallet Description (Optional)"
             rightSectionWidth={92}
             onChange={(event) => {
-              setVoucherDesc(event.target.value);
+              setWalletDescription(event.target.value);
             }}
           />
 
-          <DatePicker
-            placeholder="Pick date"
-            label="Voucher Expiry (Optional)"
-            onChange={setExpiration}
+          <TextInput
+            type="email"
+            placeholder="Enter Beneficiary email or DID"
+            label="Beneficiary Email or DID (Optional)"
+            rightSectionWidth={92}
+            onChange={(event) => {
+              setWalletBeneficiary(event.target.value);
+            }}
           />
 
+          {/* advanced */}
+
+          <Group sx={{ justifyContent: "space-between" }}>
+            <Text size="lg" weight={600}>
+              Add a Cliam type
+            </Text>{" "}
+            <Switch
+              checked={advancedOptions}
+              onChange={() => setAdvancedOptions(!advancedOptions)}
+            />
+          </Group>
+
+          {advancedOptions && (
+            <>
+              <Select
+                label="Select Claim Type"
+                placeholder="Select Cliam Type"
+                // itemComponent={SelectItem}
+                // value={chain}
+                data={[
+                  {
+                    value: "Signalling",
+                    label: "Signalling (You can send the signal when claimed)",
+                  },
+                  {
+                    value: "Arbitration",
+                    label: "Arbitration (Arbitrators decide the claim)",
+                  },
+                  {
+                    value: "DDAY",
+                    label: "DDAY (Claim on exact date)",
+                  },
+                ]}
+                // onChange={setChain}
+              />
+              {/* render feilds based on selected values */}
+              <DatePicker
+                placeholder="Select DDAY date"
+                label="Select DDay Date 
+"
+              />
+            </>
+          )}
+
+          {/* topup  */}
+
+          <Group sx={{ justifyContent: "space-between" }}>
+            <Text size="lg" weight={600}>
+              Topup the wallet
+            </Text>{" "}
+            <Switch
+              checked={isTopupToggleChecked}
+              onChange={(e) => {
+                setIsTopupToggleChecked(!isTopupToggleChecked);
+              }}
+            />
+          </Group>
+
+          {isTopupToggleChecked && (
+            <>
+              <Select
+                label="Select the wallet"
+                placeholder="Select the Wallet"
+                // itemComponent={SelectItem}
+                // value={chain}
+                data={[
+                  {
+                    value: "wallet 1",
+                    label: "wallet 1",
+                  },
+                ]}
+                // onChange={setChain}
+              />
+
+              {balanceLoader ? (
+                <Text>Loading Wallet Balance...</Text>
+              ) : (
+                <Text>Wallet's Balance is {`1ETH`}</Text>
+              )}
+
+              <TextInput
+                type="text"
+                placeholder="Enter Topup value"
+                label="Enter Top up Value"
+                rightSectionWidth={92}
+                onChange={(event) => {
+                  setTopupValue(event.target.value);
+                }}
+              />
+            </>
+          )}
+
+          <Alert>
+            This will create a wallet using signaling method with 300 sec
+            signaling period. Click on "Add a Claim Type" to update
+          </Alert>
+
           <Button
-            loading={creating}
+            loading={loading}
             className={classes.button}
             onClick={() => {
               createVoucher();
@@ -152,8 +227,9 @@ export const CreateVoucherForm = () => {
 
       <Container className={classes.progressbox}>
         <ProgressStatus
-          title="Enter Voucher Details"
-          description="Provide the basic details before we create a voucher for you ✍️. You can also set the expiry date for the voucher here"
+          title="Progress"
+          description="Provide the basic details before we create a wallet for you ✍️."
+          // update the status according to the progress
           status={20}
         />
       </Container>
