@@ -27,3 +27,5 @@ export * from "./common/progress-status/progress-staus.component";
 
 export * from "./send/send.component";
 export * from "./share-modal/share-modal.component";
+
+export * from "./common/empty-state/empty-state.component";
