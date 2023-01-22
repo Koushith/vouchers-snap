@@ -31,6 +31,7 @@ import { Activity } from "./components/activitity.component";
 import { useNavigate } from "react-router-dom";
 import { RoutePath } from "navigation";
 import { LockedWallet } from "./components/locked-wallet.component";
+import { ClaimModal } from "screens/create-voucher/components/modals/claim.component";
 
 export const VoucherDetailsScreen = () => {
   const { classes } = useStyles();
@@ -74,7 +75,7 @@ export const VoucherDetailsScreen = () => {
           <Paper withBorder className={classes.voucherDetailsContainer}>
             <Container className={classes.formContainer}>
               <Box mt={20}>
-                <BackButton label="Go Back" />
+                <BackButton label="Go Back" onClick={() => navigate(-1)} />
               </Box>
               <Container sx={{ padding: 0, marginBottom: "32px" }}>
                 <Group
@@ -136,7 +137,7 @@ export const VoucherDetailsScreen = () => {
                 {/* conditional rendering */}
 
                 <LockedWallet />
-
+                <ClaimModal />
                 {/* <Activity /> */}
               </Stack>
             </Container>
