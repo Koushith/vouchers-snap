@@ -13,4 +13,6 @@ export enum RoutePath {
   voucherDetails = "/voucher-details",
   createVoucher = "/create-voucher",
   callback = "/callback",
+  notifications = "/notifications",
+  walletSettings = "/wallet-settings",
 }

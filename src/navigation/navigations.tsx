@@ -11,6 +11,8 @@ import {
   TeamsScreen,
   RegisterScreen,
   RedeemVoucherScreen,
+  WalletSettings,
+  WalletNotification,
 } from "../screens";
 import { GlobalStyle } from "../utils";
 import { RoutePath } from "./route-path";
@@ -39,6 +41,12 @@ export const Navigation = () => {
         <Route
           path={RoutePath.createVoucher}
           element={<CreateVoucherScreen />}
+        />
+
+        <Route path={RoutePath.walletSettings} element={<WalletSettings />} />
+        <Route
+          path={RoutePath.notifications}
+          element={<WalletNotification />}
         />
       </Route>
     </Routes>

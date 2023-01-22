@@ -28,10 +28,15 @@ import { VoucherDetailsShimmer } from "./voucher-details.shimmer";
 import { wrap } from "module";
 import { Actions } from "./components/actions.component";
 import { Activity } from "./components/activitity.component";
+import { useNavigate } from "react-router-dom";
+import { RoutePath } from "navigation";
+import { LockedWallet } from "./components/locked-wallet.component";
 
 export const VoucherDetailsScreen = () => {
   const { classes } = useStyles();
   const [sendModal, setSendModal] = useState(false);
+
+  const navigate = useNavigate();
   const { voucherDetails, fetching } = useVoucherStore((state: any) => state);
 
   const formatExpiration = () => {
@@ -90,8 +95,15 @@ export const VoucherDetailsScreen = () => {
                     <Text color={"green"}>Network name</Text>
                   </Box>
                   <Group>
-                    <IconNotification />
-                    <IconSettings />
+                    <IconNotification
+                      onClick={() => navigate(RoutePath.notifications)}
+                      style={{ cursor: "pointer" }}
+                    />
+
+                    <IconSettings
+                      onClick={() => navigate(RoutePath.walletSettings)}
+                      style={{ cursor: "pointer" }}
+                    />
                   </Group>
                 </Group>
               </Container>
@@ -121,8 +133,11 @@ export const VoucherDetailsScreen = () => {
                 </Center>
 
                 <Actions />
+                {/* conditional rendering */}
 
-                <Activity />
+                <LockedWallet />
+
+                {/* <Activity /> */}
               </Stack>
             </Container>
           </Paper>
