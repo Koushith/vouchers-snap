@@ -1,8 +1,10 @@
 //@ts-nocheck
 import { Stack, Box, Text, Center, createStyles } from "@mantine/core";
-import Send from "../../../assets/icons/send.svg";
+import SendIcon from "../../../assets/icons/send.svg";
 import Recieve from "../../../assets/icons/recieve.svg";
 import Trade from "../../../assets/icons/trade.svg";
+import { ClaimModal, RecieveModal, Send } from "components";
+import { useState } from "react";
 
 const useStyles = createStyles(() => ({
   actionsContainer: {
@@ -30,30 +32,48 @@ const useStyles = createStyles(() => ({
 }));
 
 export const Actions = () => {
+  const [sendModal, setSendModal] = useState(false);
+
+  const [recieveModal, setRecieveModal] = useState(false);
+
   const { classes } = useStyles();
 
   return (
-    <div className={classes.actionsContainer}>
-      <div className={classes.actionsWrapper}>
-        <div className={classes.iconContainer}>
-          <img src={Send} alt="send" />
-        </div>
-        <Text mt={10}>Send</Text>
-      </div>
+    <>
+      <Send sendModal={sendModal} setSendModal={setSendModal} />
+      <RecieveModal
+        recieveModal={recieveModal}
+        setRecieveModal={setRecieveModal}
+      />
 
-      <div className={classes.actionsWrapper}>
-        <div className={classes.iconContainer}>
-          <img src={Recieve} alt="send" />
+      <div className={classes.actionsContainer}>
+        <div
+          className={classes.actionsWrapper}
+          onClick={() => setSendModal(!sendModal)}
+        >
+          <div className={classes.iconContainer}>
+            <img src={SendIcon} alt="send" />
+          </div>
+          <Text mt={10}>Send</Text>
         </div>
-        <Text mt={10}>Recieve</Text>
-      </div>
 
-      <div className={classes.actionsWrapper}>
-        <div className={classes.iconContainer}>
-          <img src={Trade} alt="send" />
+        <div className={classes.actionsWrapper}>
+          <div
+            className={classes.iconContainer}
+            onClick={() => setRecieveModal(!recieveModal)}
+          >
+            <img src={Recieve} alt="send" />
+          </div>
+          <Text mt={10}>Recieve</Text>
         </div>
-        <Text mt={10}>Trade</Text>
+
+        <div className={classes.actionsWrapper}>
+          <div className={classes.iconContainer}>
+            <img src={Trade} alt="trade" />
+          </div>
+          <Text mt={10}>Trade</Text>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

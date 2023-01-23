@@ -2,14 +2,20 @@ import { useState } from "react";
 import { Modal, Button, Group, Text, Center } from "@mantine/core";
 import { IconNote } from "@tabler/icons";
 
-export const ClaimModal = () => {
-  const [opened, setOpened] = useState(false);
+export interface ClaimModalProps {
+  claimModal?: boolean;
+  setClaimModal?: any;
+}
+
+export const ClaimModal = (props: ClaimModalProps) => {
+  const { claimModal = false, setClaimModal } = props;
+
   return (
     <>
       {" "}
       <Modal
-        opened={opened}
-        onClose={() => setOpened(false)}
+        opened={claimModal}
+        onClose={() => setClaimModal(false)}
         centered
         padding={40}
       >
@@ -34,9 +40,6 @@ export const ClaimModal = () => {
           <Button>Continue</Button>
         </Group>
       </Modal>
-      <Group position="center">
-        <Button onClick={() => setOpened(true)}>Open Modal</Button>
-      </Group>
     </>
   );
 };

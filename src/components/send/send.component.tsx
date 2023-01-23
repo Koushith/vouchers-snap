@@ -75,7 +75,6 @@ export const SendModal = (props: any) => {
                 placeholder="safient.eth"
                 onChange={(event) => setAddress(event.target.value)}
               />
-             
             </Stack>
 
             <Group position="apart" mt="xl">
@@ -88,9 +87,9 @@ export const SendModal = (props: any) => {
               >
                 {sending ? "Claiming" : "Claim"}
               </Button>
-              <Alert variant="light"  color="blue">
-              A small amount of currency will be used to pay for the gas fee.
-            </Alert>
+              <Alert variant="light" color="blue">
+                A small amount of currency will be used to pay for the gas fee.
+              </Alert>
             </Group>
           </Paper>
         )}
@@ -101,7 +100,8 @@ export const SendModal = (props: any) => {
               <Image src={Success} className={classes.SuccessIcon} />
             </Center>
             <Text className={classes.successText}>
-              You have successfully claimed the crypto from this voucher, check your wallet now. Cheers! 🎉
+              You have successfully claimed the crypto from this voucher, check
+              your wallet now. Cheers! 🎉
             </Text>
           </Paper>
         )}

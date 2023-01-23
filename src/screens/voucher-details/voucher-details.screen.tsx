@@ -1,7 +1,4 @@
 import {
-  Alert,
-  Badge,
-  Button,
   Center,
   Container,
   Group,
@@ -9,33 +6,27 @@ import {
   Text,
   Paper,
   Box,
-  Input,
 } from "@mantine/core";
-import { BackButton, Image, SendModal, Title } from "../../components";
 import {
-  IconAlertCircle,
-  IconAlertTriangle,
-  IconArrowUp,
-  IconCopy,
-  IconNotification,
-  IconSettings,
-} from "@tabler/icons";
+  BackButton,
+  ClaimModal,
+  RecieveModal,
+  Send,
+  Title,
+} from "../../components";
+import { IconCopy, IconNotification, IconSettings } from "@tabler/icons";
 import { useStyles } from "./voucher-details.screen.styles";
 import useVoucherStore from "store/voucher/voucher.store";
 import { useState } from "react";
-import { Confetti } from "components/primitives/confetti/confetti.component";
 import { VoucherDetailsShimmer } from "./voucher-details.shimmer";
-import { wrap } from "module";
 import { Actions } from "./components/actions.component";
-import { Activity } from "./components/activitity.component";
 import { useNavigate } from "react-router-dom";
 import { RoutePath } from "navigation";
 import { LockedWallet } from "./components/locked-wallet.component";
-import { ClaimModal } from "screens/create-voucher/components/modals/claim.component";
+import { Activity } from "./components/activitity.component";
 
 export const VoucherDetailsScreen = () => {
   const { classes } = useStyles();
-  const [sendModal, setSendModal] = useState(false);
 
   const navigate = useNavigate();
   const { voucherDetails, fetching } = useVoucherStore((state: any) => state);
@@ -66,12 +57,9 @@ export const VoucherDetailsScreen = () => {
       ) : (
         <>
           {/* <Confetti /> */}
-          <SendModal
-            sendModal={sendModal}
-            setSendModal={setSendModal}
-            value={voucherDetails.amount}
-            wallet={voucherDetails.wallet}
-          />
+
+          <ClaimModal />
+
           <Paper withBorder className={classes.voucherDetailsContainer}>
             <Container className={classes.formContainer}>
               <Box mt={20}>
@@ -112,7 +100,15 @@ export const VoucherDetailsScreen = () => {
               <Stack>
                 <Center mt={20}>
                   <Group>
-                    <Text>0x9264c4Dd3Ef78Ac7D7Fc37605B6a870a2803dc3B</Text>
+                    <Text
+                      sx={
+                        {
+                          // filter: "blur(8px)"
+                        }
+                      }
+                    >
+                      0x9...........dc3B
+                    </Text>
                     <IconCopy />
                   </Group>
                 </Center>
@@ -124,6 +120,8 @@ export const VoucherDetailsScreen = () => {
                       alignItems: "center",
                       justifyContent: "center",
                       gap: "10px",
+                      // eslint-disable-next-line no-restricted-globals
+                      filter: "blur(8px)", //conditional render
                     }}
                   >
                     <Text weight={600} sx={{ fontSize: "40px" }}>
@@ -136,9 +134,9 @@ export const VoucherDetailsScreen = () => {
                 <Actions />
                 {/* conditional rendering */}
 
-                <LockedWallet />
-                <ClaimModal />
-                {/* <Activity /> */}
+                {/* <LockedWallet /> */}
+
+                <Activity />
               </Stack>
             </Container>
           </Paper>
